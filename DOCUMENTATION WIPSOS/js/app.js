@@ -177,7 +177,16 @@
 
   function route() {
     const id = location.hash.replace("#", "") || firstItemId();
-    render(id);
+    const carto = id === "cartographie" && typeof renderCartographie === "function";
+    docEl.parentElement.classList.toggle("content-wide", carto);
+    const cartoBtn = document.getElementById("cartoBtn");
+    if (cartoBtn) cartoBtn.classList.toggle("active", carto);
+    if (carto) {
+      renderCartographie(docEl);
+      window.scrollTo(0, 0);
+    } else {
+      render(id);
+    }
     highlightActive();
   }
 
@@ -194,6 +203,16 @@
     sidebar.classList.contains("open") ? closeSidebarMobile() : openSidebarMobile();
   });
   overlay.addEventListener("click", closeSidebarMobile);
+
+  /* ---------- Icône Cartographie ---------- */
+  const cartoBtnEl = document.getElementById("cartoBtn");
+  if (cartoBtnEl) {
+    cartoBtnEl.addEventListener("click", e => {
+      e.preventDefault();
+      navigate("cartographie");
+      closeSidebarMobile();
+    });
+  }
 
   /* ---------- Recherche ---------- */
   let searchTimer;
